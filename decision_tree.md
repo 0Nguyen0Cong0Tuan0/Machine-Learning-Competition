@@ -27,37 +27,37 @@ The key task is selecting the best attribute from the dataset’s features for t
 
    - Measures reduction in uncertainty (entropy) after a split.  
    - **Entropy**: Measures impurity in a dataset:  
-     \[
+     $$
      H(S) = -P_{\text{yes}} \log_2(P_{\text{yes}}) - P_{\text{no}} \log_2(P_{\text{no}})
-     \]
+     $$
      - \(P_{\text{yes}}\), \(P_{\text{no}}\): Proportions of "yes" and "no" classes.
      - Entropy = 1 (max uncertainty, 50/50 split); Entropy = 0 (pure node).  
    - **Information Gain**:  
-     \[
+     $$
      IG(S, A) = H(S) - \sum_{v \in \text{values}(A)} \frac{|S_v|}{|S|} H(S_v)
-     \]
+     $$
      - Choose the attribute with the highest IG for the split.
 
 2. **GINI**  
    - Measures the probability of misclassifying a random element.  
    - **GINI Impurity for a Node**:  
-     \[
+     $$
      GINI = 1 - (P_{\text{yes}})^2 - (P_{\text{no}})^2
-     \]
+     $$
      - Pure node: \(GINI = 0\); Even split: \(GINI = 0.5\).  
    - **Steps**:  
      1. Calculate *GINI impurity for leaf Yes A*:  
-        \[
+        $$
         1 - P_{\text{yes}}(\text{yes}_A)^2 - P_{\text{yes}}(\text{no}_A)^2
-        \]
+        $$
         And for *leaf No A*:  
-        \[
+        $$
         1 - P_{\text{no}}(\text{yes}_A)^2 - P_{\text{no}}(\text{no}_A)^2
-        \]
+        $$
      2. Calculate *GINI impurity for attribute B* (weighted average):  
-        \[
+        $$
         GINI_{\text{attribute}} = P(\text{yes}_B) \cdot GINI(\text{leaf Yes}) + P(\text{no}_B) \cdot GINI(\text{leaf No})
-        \]
+        $$
      3. Repeat for all attributes.  
      4. Choose the attribute with the minimum *GINI impurity* for root/sub-node.  
      5. After splitting, repeat from step 1 on remaining features.  
@@ -79,13 +79,13 @@ The key task is selecting the best attribute from the dataset’s features for t
 Predicts continuous values (e.g., house prices) instead of classes. Uses **variance reduction** or **mean squared error (MSE)** for splitting:  
 
 - **Variance**:  
-  \[
+  $$
   \text{Var} = \frac{1}{n} \sum (y_i - \bar{y})^2
-  \]
+  $$
   - Split reduces variance:  
-    \[
+    $$
     \text{Variance Reduction} = \text{Var(parent)} - \left( \frac{|S_{\text{left}}|}{|S|} \text{Var}(S_{\text{left}}) + \frac{|S_{\text{right}}|}{|S|} \text{Var}(S_{\text{right}}) \right)
-    \]
+    $$
 - **MSE**: Average squared difference between actual and predicted values (node mean).
 
 <center>
