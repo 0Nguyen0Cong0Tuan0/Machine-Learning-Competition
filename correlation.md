@@ -1,4 +1,4 @@
-### **Pearson's Correlation**
+# **Pearson's Correlation**
 
 One of the most widely used measures of linear relationship between two variable.
 
@@ -73,7 +73,7 @@ $$r = \frac{20}{\sqrt{10 \times 40}} = 1$$
 
 ---- 
 
-### **Spearman’s Rank Correlation**
+# **Spearman’s Rank Correlation**
 
 Spearman's rank correlation, often called Spearman's rho (denoted as $\rho$ or $r_s$), is a statistical measure that assesses how well the relationship between two variables can be described using a *monotonic* function without assuming that the relationship is perfectly linear.
 
@@ -171,7 +171,7 @@ This means there's a moderate positive correlation between strength and speed ra
 
 ---
 
-### **Cramér’s V Correlation**
+# **Cramér’s V Correlation**
 
 Cramér’s V is a measure of association between two *categorical* variables. It tells how strongly the categories of one variable are related to the categories of another.
 
