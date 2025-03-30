@@ -66,6 +66,7 @@ Here are two examples to demonstrate how **Gradient Boosting** works for both cl
 Building the models with **Gradient Boosting**
 
 **Example 1: Classification**
+
 Use **Gradient Boosting Classifier** to predict digits from the popular **Digits dataset**.
 
 Steps:
@@ -105,6 +106,7 @@ print("Gradient Boosting Classifier accuracy is : {:.2f}".format(acc))
 ```
 
 **Example 2: Regression**
+
 Use *Gradient Boosting Regressor* on the *Diabetes dataset* to predict continuous values.
 
 Steps:

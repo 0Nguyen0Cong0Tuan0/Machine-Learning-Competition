@@ -2,9 +2,13 @@
 
 A *Decision Tree* is a supervised ML algorithm used in both classification and regression tasks. It mimics human decision-making, making it intuitive and easy to understand.
 
+A *Decision Tree* is a tree shaped diagram used to determine a course of action. Each branch of the tree represents a possible decision, occurrence or reaction.
+
 <center>
 
 ![alt text](img/image7.png)
+
+![alt text](img/image13.png)
 
 </center>
 
@@ -12,7 +16,7 @@ A *Decision Tree* is a supervised ML algorithm used in both classification and r
 
 - **Nodes**: Points where the tree splits based on the value of an attribute/feature.
   - **Root**: The first node where splitting begins.
-  - **Leaves**: Terminal nodes that predict the outcome.
+  - **Leaves**: Terminal nodes that predict the outcome or carries the classification of the decision.
 - **Edges**: Direct the outcome of a split to the next node.
 
 ## **Decision Tree Types**
@@ -23,45 +27,104 @@ The key task is selecting the best attribute from the dataset’s features for t
 
 #### **Methods**
 
-1. **Information Gain (ID3)**  
+##### **Information Gain** 
 
-   - Measures reduction in uncertainty (entropy) after a split.  
-   - **Entropy**: Measures impurity in a dataset:  
-     $$
-     H(S) = -P_{\text{yes}} \log_2(P_{\text{yes}}) - P_{\text{no}} \log_2(P_{\text{no}})
-     $$
-     - \(P_{\text{yes}}\), \(P_{\text{no}}\): Proportions of "yes" and "no" classes.
-     - Entropy = 1 (max uncertainty, 50/50 split); Entropy = 0 (pure node).  
-   - **Information Gain**:  
-     $$
-     IG(S, A) = H(S) - \sum_{v \in \text{values}(A)} \frac{|S_v|}{|S|} H(S_v)
-     $$
-     - Choose the attribute with the highest IG for the split.
+**Information Gain** used by UD3, C4.5 and C5.0 tree-generation algorithms. It is based on the concept of entropy and information content from information theory.
 
-2. **GINI**  
-   - Measures the probability of misclassifying a random element.  
-   - **GINI Impurity for a Node**:  
-     $$
-     GINI = 1 - (P_{\text{yes}})^2 - (P_{\text{no}})^2
-     $$
-     - Pure node: \(GINI = 0\); Even split: \(GINI = 0.5\).  
-   - **Steps**:  
-     1. Calculate *GINI impurity for leaf Yes A*:  
-        $$
-        1 - P_{\text{yes}}(\text{yes}_A)^2 - P_{\text{yes}}(\text{no}_A)^2
-        $$
-        And for *leaf No A*:  
-        $$
-        1 - P_{\text{no}}(\text{yes}_A)^2 - P_{\text{no}}(\text{no}_A)^2
-        $$
-     2. Calculate *GINI impurity for attribute B* (weighted average):  
-        $$
-        GINI_{\text{attribute}} = P(\text{yes}_B) \cdot GINI(\text{leaf Yes}) + P(\text{no}_B) \cdot GINI(\text{leaf No})
-        $$
-     3. Repeat for all attributes.  
-     4. Choose the attribute with the minimum *GINI impurity* for root/sub-node.  
-     5. After splitting, repeat from step 1 on remaining features.  
-     6. If *GINI* of the current node is lower than the next split’s GINI, stop splitting and move to another node.
+**Entropy** *is the measure of randomness or unpredictability in the dataset* - measures impurity in a dataset and is defined as:
+
+$$H(T) = I_E(p_1, p_2, ... , p_J) = - \sum^J_{i=1}p_i \log_2 p_i$$
+
+where $p_1, p_2, ...$ are fractions that add up to 1 and represent the percentage of each class present in the child node that results from a split in the tree. If entropy = 1 is max uncertainty, 50/50 split and entropy = 0 is pure node.
+
+$$IG(T, a) = H(T) - H(T | a) = - \sum^J_{i=1}p_i \log_2 p_i - \sum^J_{i=1}-Pr(i | a)\log_2Pr(i | a)$$
+
+or
+
+$$
+IG(T, A) = H(T) - \sum_{v \in \text{values}(A)} \frac{|T_v|}{|T|} H(T_v)
+$$
+
+where
+
+- $IG(T,a)$ is information gain
+- $H(T)$ is entropy (parent)
+- $H(T | a)$ is sum of entropies (children)
+
+Averaging over the possible values of $A$ will get **Mutual Information**
+
+$$E_A(IG(T, a)) = I(T; A) = H(T) - H(T|a) = - \sum^J_{i=1}p_i \log_2 p_i - \sum_a p(a)\sum^J_{i=1}-Pr(i|a)\log_2Pr(i | a)$$
+
+where
+
+- $E_A(IG(T, a))$ is expected information gain
+- $I(T;A)$ is mutual information between T and A
+- $H(T)$ is entropy (parent)
+- $H(T | a)$ is weighted sum of entropies (children)
+
+That is, the expected information gain is the mutual information, meaning that on average, the reduction in the entropy of $T$ is the mutual information.
+
+$\Rightarrow$ **Information Gain** *is the measure of decrease in entropy after dataset is split* - measures reduction in uncertainty (entropy) after a split.
+
+Choose the attribute with the highest IG for the split.
+
+> Information gain is used to decide which feature to split on at each step in building the tree. Simplicity is best to keep the tree small, to do so, at each step, we should choose the split that results in most consistent child nodes. 
+>
+> A commonly used measure of consistency is called *information* which is measured in *bits*. For each node of the tree, the information value represents the expected amount of information that would be needed to specify whether a new instance should be classified yes or no, given that the example reached that node.
+
+Consider an example dataset with 4 attributes:
+
+- outlook (sunny, overcast, rainy)
+- temperature (hot, mild, cold)
+- humidity (high, normal)
+- windy (true, false)
+- a binary target variable, play (yes, no)
+
+and 14 data points.
+
+To construct a decision tree on this data, we need to compare the information gain of each of four trees, each split on one of the four features.
+
+The split with the highest information gain will be taken as the first split and the process will continue until all children nodes each have consistent data or until the information gain is 0.
+
+To find the information gain of the split using *windy*, we must first calculate the information in the dataset before the split.
+
+The original data contained 9 yes's and 5 no's
+
+$$H(T) = I_E([9, 5]) = -\frac{9}{14}\log_2\frac{9}{14} - \frac{5}{14}\log_2\frac{5}{14} = 0.94$$
+
+The split using the feature *windy* results in two children nodes, one for a *windy* value of true and and one or a *windy* value of false.
+
+In this dataset, there are 6 data ponints with a true *windy* value, 3 of which have a *play* (where *play* is the target variable) value of yes and 3 with a play value of no.
+
+The 8 remaining data points with a *windy* value of false contain 2 no's and 6 yes's. 
+
+The information of the *windy=true* node is calculated using the entropy equation. Since there is an equal number of yes's and no's in this node, we have
+
+$$H(\operatorname{Play} | \operatorname{Windy} = \operatorname{True}) = -\frac{3}{6}\log_2\frac{3}{6} -\frac{3}{6}\log_2\frac{3}{6} = 1$$
+
+For the node where *windy=false* node, there were 8 data points, 6 yes's and 2 no's. Thus we have
+
+$$H(\operatorname{Play} | \operatorname{Windy} = \operatorname{False}) = -\frac{6}{8}\log_2\frac{6}{8} -\frac{2}{8}\log_2\frac{2}{8} = 0.81$$
+
+To find the information of the split, we take the weighted average of these two numbers based on how many observations fell into which node
+
+$$I_E([3, 3], [6, 2]) = I_E(\text{windy or not}) = \frac{6}{14}\times 1 + \frac{8}{14} \times 0.81 = 0.89$$
+
+Now we can calculate the information gain achieved by splitting on the *windy* feature
+
+$$IG(\text{windy}) = I_E([9, 5]) - I_E([3,3], [6,2]) = 0.94 - 0.89 = 0.05$$
+
+To build the tree, the information gain of each possible first split would need to be calculated. The best first split is the one that provides the most information gain. This process is repeated for each impure node until the tree is complete. 
+
+##### **Gini impurity**
+
+**Gini impurity** used by the CART (Classification and Regression tree) algorithm for classification trees and measures the probability of misclassifying a random element.  
+
+For a set of items with $J$ classes and relative frequencies $p_i$, $i \in \{1, 2, ... , J\}$, the probability of choosing an item with label $i$ is $p_i$ and the probability of miscategorizing that item is $\sum_{k \neq i}p_k = 1 - p_i$. The **Gini impurity** is computed by summing pairwise products of these probabilities for each class label:
+
+$$I_G(p) = \sum^{J}_{i=1}\left( p_i \sum_{k \neq i}p_k\right) = \sum_{i=1}^J p_i(1-p_i) = \sum^J_{i=1}(p_i - p_i^2) = \sum_{i=1}^Jp_i - \sum_{i=1}^Jp_i^2 = 1 - \sum_{i=1}^Jp_i^2$$
+
+where $p_i$ represents the percentage of class $i$ present in the child node that results from a split in the tree.
 
 #### **Feature Types**
 
