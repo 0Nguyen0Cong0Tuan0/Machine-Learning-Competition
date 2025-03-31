@@ -72,7 +72,9 @@ An end-to-end system that combines all of these aspects gives a novel solution f
 
 For a given dataset with $n$ examples and $m$ features $\mathcal{D} = \{(x_i, y_i)\} (| \mathcal{D}| = n, x_i \in R^m, y_i \in R)$, a tree ensemble model (shown in Fig. 1) use $K$  additive functions to predict the output
 
-[1] $$\hat{y_1} = \phi(x_i) = \sum^K_{k=1}f_k(x_i), \quad f_k \in \mathcal{F}$$
+[1] 
+
+$$\hat{y}\_i = \phi(x_i) = \sum^K_{k=1}f_k(x_i), \quad f_k \in \mathcal{F}$$
 
 where
 
@@ -82,11 +84,11 @@ where
 
 Each $f_k$ corresponds to an independent tree structure $q$ with $T$ leaves and leaf weights $w$. Unlike decision trees, each regression tree contain a continuous score on each of the leaf and use $w_i$ to represent score on $i$-th leaf.
 
-<center>
+<div align='center'>
 
 ![alt text](img/image-1.png)
 
-</center>
+</div>
 
 For a given example, use the decision rules in the trees (given by $q$) to classify it into the leaves and calculate the final prediction by summing up the score in the corresponding leaves (given by $w$). To learn the set of functions used in the model $\rightarrow$ minimize the following regularized objective.
 
@@ -127,35 +129,35 @@ Can remove the constant terms to obtain the following simplified objective at st
 
 [3]
 
-$$\tilde{\mathcal{L}^{(t)}} \simeq \sum^n_{i=1} \left[ g_if_t(x_i) + \frac{1}{2}h_if_t^2(x_i)  \right] + \Omega(f_t)$$
+$$\tilde{\mathcal{L}}^{(t)} \simeq \sum^n_{i=1} \left[ g_if_t(x_i) + \frac{1}{2}h_if_t^2(x_i)  \right] + \Omega(f_t)$$
 
 Define $I_j = \{i | q(x_i) = j\}$ as the instance set of leaf $j$. We can rewrite Eq (e) by expanding $\Omega$ as follows
 
 [4]
 
-$$\tilde{\mathcal{L}^{(t)}} = \sum^n_{i=1} \left[ g_if_t(x_i) + \frac{1}{2}h_if_t^2(x_i)  \right] + \gamma T + \frac{1}{2}\lambda \sum^T_{j=1}w_j^2$$
+$$\tilde{\mathcal{L}}^{(t)} = \sum^n_{i=1} \left[ g_if_t(x_i) + \frac{1}{2}h_if_t^2(x_i)  \right] + \gamma T + \frac{1}{2}\lambda \sum^T_{j=1}w_j^2$$
 
-$$=\sum^{T}_{j=1}\left[\left( \sum_{i \in I_j}g_i        \right)w_j + \frac{1}{2}\left( \sum_{i \in I_j} h_i + \lambda \right)w_j^2  \right] \gamma T $$
+$$=\sum^{T}\_{j=1}\left[\left( \sum_{i \in I_j}g_i        \right)w_j + \frac{1}{2}\left( \sum_{i \in I_j} h_i + \lambda \right)w_j^2  \right] \gamma T$$
 
 For a fixed structure $q(x)$, we can compute the optimal weight $w^*_j$ of leaf $j$ by
 
 [5]
 
-$$w^*_j = -\frac{\sum_{i \in I_j}g_i}{\sum_{i \in I_j}h_i + \lambda}$$
+$$w^{*}\_j = -\frac{\sum_{i \in I_j}g_i}{\sum_{i \in I_j}h_i + \lambda}$$
 
 and calculate the corresponding optimal value by
 
 [6]
 
-$$\tilde{\mathcal{L}^{(t)}(q)} = -\frac{1}{2} \sum^T_{j=1}\frac{(\sum_{i \in I_j} g_i)^2}{\sum_{i \in I_j} h_i + \lambda} + \gamma T  $$
+$$\tilde{\mathcal{L}}^{(t)}(q) = -\frac{1}{2} \sum^T_{j=1}\frac{(\sum_{i \in I_j} g_i)^2}{\sum_{i \in I_j} h_i + \lambda} + \gamma T  $$
 
 Eq (6) can be used as a scoring function to measure the quality of a tree structure $q$. This score is like the impurity score for evaluating decision trees, except that it is derived from a wider range of objective functions. Fig. 2 illustrates how this score can be calculated.
 
-<center>
-
+<div align='center'>
+  
 ![alt text](img/image-2.png)
 
-</center>
+</div>
 
 Normally it is impossible to enumerate all the possible tree structures $q$. A greedy algorithm that starts from a single leaf and iteratively adds branches to the tree is used instead.
 
@@ -163,7 +165,13 @@ Assume that $I_L$ and $I_R$ are the instance sets of left and right nodes after 
 
 [7]
 
-$$\mathcal{L}_{split} = \frac{1}{2} \left[ \frac{(\sum_{i \in I_L} g_i)^2}{\sum_{i \in I_L} h_i + \lambda} + \frac{(\sum_{i \in I_R} g_i)^2}{\sum_{i \in I_R} h_i + \lambda} - \frac{(\sum_{i \in I} g_i)^2}{\sum_{i \in I} h_i + \lambda} \right] - \gamma$$
+$$
+\mathcal{L}\_{split} = \frac{1}{2} \left[ 
+\frac{(\sum_{i \in I_L} g_i)^2}{\sum_{i \in I_L} h_i + \lambda} + 
+\frac{(\sum_{i \in I_R} g_i)^2}{\sum_{i \in I_R} h_i + \lambda} - 
+\frac{(\sum_{i \in I} g_i)^2}{\sum_{i \in I} h_i + \lambda} 
+\right] - \gamma
+$$
 
 This formula is usually used in pratice for evaluating the split candidates.
 
@@ -185,21 +193,21 @@ To do so, a split finding algorithm enumerates over all the possible splits on a
 
 Most existing single machine tree boosting implementations, such as scikit-learn, R’s gbm as well as the single machine version of XGBoost support the exact greedy algorithm. The exact greedy algorithm is shown in Alg. 1.
 
-<center>
-
+<div align='center'>
+  
 ![alt text](img/image-3.png)
 
-</center>
+</div>
 
 ### 3.2 _ Approximate algorithm
 
 The exact greedy algorithm is very powerful since it enumerates over all possible splitting points greedily. However, it is impossible to efficiently do so when the data does not fit entirely into memory. Same problem also arises in the distributed setting $\rightarrow$ To support effective gradient tree boosting in these two settings, an approximate algorithm is needed.
 
-<center>
+<div align='center'>
 
 ![alt text](img/image-5.png)
 
-</center>
+</div>
 
 We summarize an approximate framework which resembles the ideas proposed in past literatures, in Alg. 2.
 
@@ -221,11 +229,11 @@ $\rightarrow$ The local proposal refines the candidate after splits and can pote
 
 A comparison of different algorithms on a Higgs bonson dataset.
 
-<center>
+<div align='center'>
 
 ![alt text](img/image6.png)
 
-</center>
+</div>
 
 We find that the local proposal indeed requires fewer candidates. The global proposal can be as accurate as the local one given enough candidates.
 
@@ -243,7 +251,7 @@ Users can freely choose between the methods according to their needs.
 
 The important step in the approximate algorithm is to propose candidate split points. Usually percentiles of a feature are used to make candidates distribute evenly on the data.
 
-Formally, let multi-set $\mathcal{D}_k = \{ (x_{1k}, h_1), (x_{2k}, h_2), ... , (x_{nk}, h_n)\}$ represent the $k$-th feature values and second order gradient statistics of each training instances. We can define a rank functions $r_k : \R \to [0, +\infty]$ as
+Formally, let multi-set $\mathcal{D}\_k = \{ (x_{1k}, h_1), (x_{2k}, h_2), ... , (x_{nk}, h_n)\}$ represent the $k$-th feature values and second order gradient statistics of each training instances. We can define a rank functions $r_k : \R \to [0, +\infty]$ as
 
 [8]
 
@@ -310,32 +318,32 @@ Our task is given a series of input $\mathcal{D}$, to estimate $r^+(y)$ and $r^-
 
 **Definition A.1.** *Quantile Summary of Weighted Data*
 
-A *quantile summary* for $\mathcal{D}$ is defined to be tuple $Q\mathcal{(D)} = (S, \tilde{r}^+_{\mathcal{D}}, \tilde{r}^-_{\mathcal{D}}, \tilde{w}_{\mathcal{D}})$
+A *quantile summary* for $\mathcal{D}$ is defined to be tuple $Q(\mathcal{D}) = (S, \tilde{r}^+\_{\mathcal{D}}, \tilde{r}^-\_{\mathcal{D}}, \tilde{w}\_{\mathcal{D}})$
 
 where $S = \{x_1, x_2, ... , x_n\}$ is selected form the points in $\mathcal{D}$ (i.e. $x_i \in \{ x | (x, w) \in \mathcal{D} \}$) with the following properties:
 
 1 _ $x_i < x_{i + 1}$ for all $i$ and $x_1$ and $x_k$ are minimum and maximum point in $\mathcal{D}$:
 $$x_1 = \min_{(x, w) \in \mathcal{D}}x, \quad x_k = \max_{(x, w) \in \mathcal{D}} x$$
 
-2 _ $\tilde{r}^+_{\mathcal{D}}, \tilde{r}^-_{\mathcal{D}}$ and $\tilde{w}_{\mathcal{D}}$ are functions in $S \to [0, +\infty]$ that satisfies
+2 _ $\tilde{r}^+\_{\mathcal{D}}, \tilde{r}^-\_{\mathcal{D}}$ and $\tilde{w}\_{\mathcal{D}}$ are functions in $S \to [0, +\infty]$ that satisfies
 
 [14]
 
-$$\tilde{r}^-_{\mathcal{D}}(x_i) \leq r^-_{\mathcal{D}}(x_i)$$  
+$$\tilde{r}^-\_{\mathcal{D}}(x_i) \leq r^-_{\mathcal{D}}(x_i)$$  
 
-$$\tilde{r}^+_{\mathcal{D}}(x_i) \geq r^+_{\mathcal{D}}(x_i)$$
+$$\tilde{r}^+\_{\mathcal{D}}(x_i) \geq r^+_{\mathcal{D}}(x_i)$$
 
-$$ \tilde{w}_{\mathcal{D}}(x_i) \leq w_{\mathcal{D}}(x_i)$$
+$$ \tilde{w}\_{\mathcal{D}}(x_i) \leq w_{\mathcal{D}}(x_i)$$
 
 The equality sign holds for maximum and minimum point
 
-$$\tilde{r}^-_{\mathcal{D}}(x_i) = r^-_{\mathcal{D}}(x_i), \quad \tilde{r}^+_{\mathcal{D}}(x_i) = r^+_{\mathcal{D}}(x_i) \text{ and } \tilde{w}_{\mathcal{D}}(x_i) =  w_{\mathcal{D}}(x_i) \text{ for } i \in \{1, k\}$$
+$$\tilde{r}^-\_{\mathcal{D}}(x_i) = r^-\_{\mathcal{D}}(x_i), \quad \tilde{r}^+\_{\mathcal{D}}(x_i) = r^+\_{\mathcal{D}}(x_i) \text{ and } \tilde{w}\_{\mathcal{D}}(x_i) =  w\_{\mathcal{D}}(x_i) \text{ for } i \in \{1, k\}$$
 
 Finally, the function value must also satisfy the following constraints
 
 [15]
 
-$$\tilde{r}_{\mathcal{D}}^{-}(x_i) + \tilde{w}_{\mathcal{D}}(x_i) \leq \tilde{r}_{\mathcal{D}}^{-}(x_{i + 1}), \quad \tilde{r}_{\mathcal{D}}^{+}(x_i) \leq \tilde{r}_{\mathcal{D}}^{-}(x_{i + 1}) - \tilde{w}_{\mathcal{D}}(x_i)$$
+$$\tilde{r}\_{\mathcal{D}}^{-}(x_i) + \tilde{w}\_{\mathcal{D}}(x_i) \leq \tilde{r}\_{\mathcal{D}}^{-}(x_{i + 1}), \quad \tilde{r}\_{\mathcal{D}}^{+}(x_i) \leq \tilde{r}\_{\mathcal{D}}^{-}(x_{i + 1}) - \tilde{w}\_{\mathcal{D}}(x_i)$$
 
 Since these functions are only defined on $S$, it is suffice to use $4k$ record to store the summary. Specifically, we need to remember each $x_i$ and the corresponding function values of each $x_i$.
 
