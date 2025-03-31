@@ -32,7 +32,7 @@ where
 
 Pearson's $r$ is the covariance of $X$ and $Y$ divided by the product of their std (standard deviations)
 
-$$r = \frac{\operatorname{Cov}(X, Y)}{\sigma_X \sigma_Y}$$
+$$r = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y}$$
 
 **Example Calculation**
 
