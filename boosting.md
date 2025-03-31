@@ -14,11 +14,11 @@ To understand boosting and its working, we will be using **AdaBoost** boosting t
 
 > **AdaBoost (Adaptive Boosting)** is an ensemble learning algorithm that improves classification accuracy by combining multiple decision trees. It assigns equal weights to all training samples initially and iteratively adjusts these weights by focusing more on misclassified datapoints for next model. It effectively reduces bias and variance making it useful for classification tasks but it can be sensitive to noisy data and outliers.
 
-<center>
+<div align='center'>
 
 ![alt text](img/image.png)
 
-</center>
+</div>
 
 The above diagram explains the AdaBoost algorithm in a very simple way. Let’s try to understand it in a stepwise process:
 **Step 1: Initial model (B1)**
