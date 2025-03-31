@@ -1,0 +1,99 @@
+# **Classification Evaluation Metrics**
+
+When training a classification model, we need to *measure its performance*. We can not rely only on accuracy because real-world problems often involve imbalanced datasets. Instead, we use *multiple evaluation metrics* to *analyze different aspects* of the model's performance.
+
+---
+## Confusion Matrix
+
+A **confusion matrix** is a table that summarizes the performance of a classification model by comparing actual vs. predicted values.
+
+<div align="center">
+
+| Actual / Predict |  Predicted Negative (0) | Predicted Positive (1) |
+| --- | --- | --- |
+| **Actual Negative (0)** | True Negative (TN) | False Positive (FP) |
+| **Actual Positive (1)** | False Negative (FN) | True Positive (TP) |
+
+</div>
+
+**Definitions**
+
+- *True Positive (TP)* - The model correctly predicts a positive case
+- *True Negative (TN)* - The model correctly predicts a negative case.
+- *False Positive (FP) (Type I Error)* - The model incorrectly predicts a positive case when it's actually negative (a false alarm).
+- *False Negative (FN) (Type II Error)* - The model incorrectly predicts a negative case when it's actually positive (a missed detection)
+
+**Example**
+
+Imagine a medical test for detecting COVID-19:
+
+- **TP** - The test correctly detects an infected person.
+- **TN** - The test correctly identifies a healthy person.
+- **FP** - The test says a healthy person has COVID-19 (false alarm).
+- **FN** - The test fails to detect an infected person (missed case).
+
+**Why is the confusion matrix useful?**
+- It helps us see different types of errors (FP & FN).
+- It is the foundation for all other evaluation metrics.
+
+---
+
+## Accuracy
+
+$$\operatorname{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
+
+**Accuracy** measures the proportion of correctly predicted cases out of all cases.
+
+**Example**
+
+If we have 100 patients and our model correctly classifies 90 (both positive & negative), the accuracy is:
+
+$$\frac{90}{100} = 90\%$$
+
+**When to use Accuracy?**
+- *Good for balanced datasets* (equal positives & negatives).
+- *Not good for imbalanced datasets* (e.g., fraud detection, where 99% are non-fraud).
+
+**Example of a problem with accuracy**
+
+If 99% of transactions are non-fraudulent, a model that always predicts "no fraud" will have 99% accuracy but it’s useless because it never detects fraud!
+
+---
+
+## Precision (Positive Predictive Value)
+
+$$\operatorname{Precision} = \frac{TP}{TP + FP}$$
+
+**Precision** measures how many predicted positive cases are actually positive.
+
+**Example**
+- Suppose we predict **100 people as having COVID-19**.
+- Out of those, **80 actually have** COVID-19, and **20 are false positives**.
+
+$\Rightarrow \operatorname{Precision} = \frac{80}{80 + 20} = 80\%$
+
+**When to use Precision?**
+- When **false positives are costly**.
+- Examples:
+    - Spam detection because we don’t want many good emails marked as spam.
+    - Fraud detection because a false positive means blocking a real customer’s card.
+
+--- 
+
+## Recall (Sensitivity / True Positive Rate)
+
+$$\operatorname{Recall} = \frac{TP}{TP + FN}$$
+
+**Recall** measures how many actual positives were correctly identified.
+
+**Example**
+- Suppose **100 people have COVID-19**.
+- The model detects **80**, but **misses 20 cases**.
+
+$\Rightarrow \operatorname{Recall} = \frac{80}{80 + 20} = 80\%$
+
+**When to use Recall?**
+- When **false negatives are costly**.
+- Examples:
+    - Legal systems because falsely convicting an innocent person.
+    - Drug testing because falsely flagging athletes for doping.
