@@ -18,10 +18,7 @@ Decision Trees are fundamental models in machine learning, with various adaptati
 
 - **Purpose**: Used for predicting continuous values (e.g., house prices).
 - **Splitting Criteria**: Uses *variance reduction* as the metric for splitting nodes.
-  - Variance calculation:
-    \[
-    \text{Var} = \frac{1}{n} \sum (y_i - \bar{y})^2
-    \]
+  - Variance calculation: $\text{Var} = \frac{1}{n} \sum (y_i - \bar{y})^2$
   - The goal is to maximize variance reduction across child nodes.
 
 ---
@@ -47,16 +44,10 @@ Decision Trees are fundamental models in machine learning, with various adaptati
   - Each tree is trained to minimize residuals (errors) from prior predictions.
 - **Implementation Steps**:
   1. **Initialize Prediction**: Start with a baseline, often the mean of the target (for regression).
-  2. **Compute Residuals**:
-     \[
-     y_n = y_{\text{actual}} - y_{n-1}
-     \]
+  2. **Compute Residuals**: $y_n = y_{\text{actual}} - y_{n-1}$
      - Residuals represent errors from the previous step.
   3. **Train New Tree on Residuals**.
-  4. **Update Ensemble**:
-     \[
-     y_n^1 = y_{n-1}^1 + \text{step} \cdot y_n
-     \]
+  4. **Update Ensemble**: $y_n^1 = y_{n-1}^1 + \text{step} \cdot y_n$
      - The *step size* (learning rate) helps prevent overfitting.
   5. **Repeat Until Stopping Criterion is Met** (e.g., max trees reached).
 
@@ -72,15 +63,9 @@ Decision Trees are fundamental models in machine learning, with various adaptati
 
 1. **Second-Order Optimization**:
    - Uses second-order Taylor approximations (gradient & Hessian) for faster convergence.
-   - Loss function:
-     \[
-     L = \sum_i l(y_i, \hat{y}_i) + \Omega(f)
-     \]
+   - Loss function: $L = \sum_i l(y_i, \hat{y}_i) + \Omega(f)$
 2. **Regularization for Overfitting Control**:
-   - Adds penalties to avoid complex models:
-     \[
-     \Omega(f) = \gamma T + \frac{1}{2} \lambda ||w||^2
-     \]
+   - Adds penalties to avoid complex models: $\Omega(f) = \gamma T + \frac{1}{2} \lambda ||w||^2$
      - \( \gamma \): Minimum loss reduction required for a split (pruning).
      - \( \lambda \): L2 regularization to smooth leaf weights.
 3. **Efficiency & Scalability**:
