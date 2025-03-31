@@ -4,13 +4,13 @@ A *Decision Tree* is a supervised ML algorithm used in both classification and r
 
 A *Decision Tree* is a tree shaped diagram used to determine a course of action. Each branch of the tree represents a possible decision, occurrence or reaction.
 
-<center>
+<div align='center'>
 
 ![alt text](img/image7.png)
 
 ![alt text](img/image13.png)
 
-</center>
+</div>
 
 ## **Structure**
 
@@ -100,11 +100,11 @@ The 8 remaining data points with a *windy* value of false contain 2 no's and 6 y
 
 The information of the *windy=true* node is calculated using the entropy equation. Since there is an equal number of yes's and no's in this node, we have
 
-$$H(\operatorname{Play} | \operatorname{Windy} = \operatorname{True}) = -\frac{3}{6}\log_2\frac{3}{6} -\frac{3}{6}\log_2\frac{3}{6} = 1$$
+$$H(\text{Play} | \text{Windy} = \text{True}) = -\frac{3}{6}\log_2\frac{3}{6} -\frac{3}{6}\log_2\frac{3}{6} = 1$$
 
 For the node where *windy=false* node, there were 8 data points, 6 yes's and 2 no's. Thus we have
 
-$$H(\operatorname{Play} | \operatorname{Windy} = \operatorname{False}) = -\frac{6}{8}\log_2\frac{6}{8} -\frac{2}{8}\log_2\frac{2}{8} = 0.81$$
+$$H(\text{Play} | \text{Windy} = \text{False}) = -\frac{6}{8}\log_2\frac{6}{8} -\frac{2}{8}\log_2\frac{2}{8} = 0.81$$
 
 To find the information of the split, we take the weighted average of these two numbers based on how many observations fell into which node
 
