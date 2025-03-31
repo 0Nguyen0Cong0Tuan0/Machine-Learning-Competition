@@ -54,7 +54,7 @@ $$\hat{F} = \argmin_F \mathbb{E}_{x, y}[L(y, F(x))]$$
 
 The gradient boosting method assume a real-value $y$. It seeks an approximation $\hat{F}(x)$ in the form of a weighted sum of $M$ functions $h_m(x)$ from some class $\mathcal{H}$, called base or weak learner:
 
-$$\hat{F}(x) = \sum^M_{m=1}\gamma_m h_m(x) + \operatorname{const}$$
+$$\hat{F}(x) = \sum^M_{m=1}\gamma_m h_m(x) + \text{const}$$
 
 We are usually given a training set $\{ (x_1, y_1),...,(x_n, y_n) \}$. In accordance with the empirical risk minimization principle, the method tries to find an approximation $\hat{F}(x)$ that minimizes the average value of the loss function on the training set, i.e., minimize the empirical risk.
 
