@@ -122,7 +122,7 @@ To build the tree, the information gain of each possible first split would need 
 
 For a set of items with $J$ classes and relative frequencies $p_i$, $i \in \{1, 2, ... , J\}$, the probability of choosing an item with label $i$ is $p_i$ and the probability of miscategorizing that item is $\sum_{k \neq i}p_k = 1 - p_i$. The **Gini impurity** is computed by summing pairwise products of these probabilities for each class label:
 
-$$I_G(p) = \sum^{J}_{i=1}\left( p_i \sum_{k \neq i}p_k\right) = \sum_{i=1}^J p_i(1-p_i) = \sum^J_{i=1}(p_i - p_i^2) = \sum_{i=1}^Jp_i - \sum_{i=1}^Jp_i^2 = 1 - \sum_{i=1}^Jp_i^2$$
+$$I_G(p) = \sum^{J}\_{i=1}\left( p_i \sum_{k \neq i}p_k \right) = \sum_{i=1}^J p_i(1-p_i) = \sum^J_{i=1}(p_i - p_i^2) = \sum_{i=1}^Jp_i - \sum_{i=1}^Jp_i^2 = 1 - \sum_{i=1}^Jp_i^2$$
 
 where $p_i$ represents the percentage of class $i$ present in the child node that results from a split in the tree.
 
@@ -141,24 +141,24 @@ where $p_i$ represents the percentage of class $i$ present in the child node tha
 
 Predicts continuous values (e.g., house prices) instead of classes. Uses **variance reduction** or **mean squared error (MSE)** for splitting:  
 
-- **Variance**:  
-  $$
-  \text{Var} = \frac{1}{n} \sum (y_i - \bar{y})^2
-  $$
-  - Split reduces variance:  
-    $$
-    \text{Variance Reduction} = \text{Var(parent)} - \left( \frac{|S_{\text{left}}|}{|S|} \text{Var}(S_{\text{left}}) + \frac{|S_{\text{right}}|}{|S|} \text{Var}(S_{\text{right}}) \right)
-    $$
+- **Variance**:
+  
+$$\text{Var} = \frac{1}{n} \sum (y_i - \bar{y})^2$$
+
+$\rightarrow$ Split reduces variance:
+    
+$$\text{Variance Reduction} = \text{Var(parent)} - \left( \frac{|S_{\text{left}}|}{|S|} \text{Var}(S_{\text{left}}) + \frac{|S_{\text{right}}|}{|S|} \text{Var}(S_{\text{right}}) \right)$$
+    
 - **MSE**: Average squared difference between actual and predicted values (node mean).
 
-<center>
+<div align='center'>
 
 ![alt text](img/image8.png)  
 ![alt text](img/image9.png)  
 ![alt text](img/image10.png)  
 ![alt text](img/image11.png)
 
-</center>
+</div>
 
 ## **Pros and Cons**
 
