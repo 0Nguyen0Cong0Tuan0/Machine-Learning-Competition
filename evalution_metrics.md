@@ -40,7 +40,7 @@ Imagine a medical test for detecting COVID-19:
 
 ## Accuracy
 
-$$\operatorname{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
+$$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
 
 **Accuracy** measures the proportion of correctly predicted cases out of all cases.
 
@@ -62,7 +62,7 @@ If 99% of transactions are non-fraudulent, a model that always predicts "no frau
 
 ## Precision (Positive Predictive Value)
 
-$$\operatorname{Precision} = \frac{TP}{TP + FP}$$
+$$\text{Precision} = \frac{TP}{TP + FP}$$
 
 **Precision** measures how many predicted positive cases are actually positive.
 
@@ -70,7 +70,7 @@ $$\operatorname{Precision} = \frac{TP}{TP + FP}$$
 - Suppose we predict **100 people as having COVID-19**.
 - Out of those, **80 actually have** COVID-19, and **20 are false positives**.
 
-$\Rightarrow \operatorname{Precision} = \frac{80}{80 + 20} = 80\%$
+$\Rightarrow \text{Precision} = \frac{80}{80 + 20} = 80\%$
 
 **When to use Precision?**
 - When **false positives are costly**.
@@ -82,7 +82,7 @@ $\Rightarrow \operatorname{Precision} = \frac{80}{80 + 20} = 80\%$
 
 ## Recall (Sensitivity / True Positive Rate)
 
-$$\operatorname{Recall} = \frac{TP}{TP + FN}$$
+$$\text{Recall} = \frac{TP}{TP + FN}$$
 
 **Recall** measures how many actual positives were correctly identified.
 
@@ -90,7 +90,7 @@ $$\operatorname{Recall} = \frac{TP}{TP + FN}$$
 - Suppose **100 people have COVID-19**.
 - The model detects **80**, but **misses 20 cases**.
 
-$\Rightarrow \operatorname{Recall} = \frac{80}{80 + 20} = 80\%$
+$\Rightarrow \text{Recall} = \frac{80}{80 + 20} = 80\%$
 
 **When to use Recall?**
 - When **false negatives are costly**.
