@@ -265,7 +265,7 @@ $$| r_k(s_{k, j}) - r_k(s_{k, j + 1})| < \epsilon, \quad s_{k1} = \min_i x_{ik},
 
 Here $\epsilon$ is an approximation factor. Intuitively, this means that there is roughly $\frac{1}{\epsilon}$ candidate points. Here each data point is weighted by $h_i$. To see why $h_i$ represents the weight, we can rewrite Eq (3) as
 
-$$\sum^n_{i=1} \frac{1}{2}h_i(f_t(x_i) - \frac{g_i}{h_i})^2 + \Omega(f_t) + constant$$
+$$\sum^n_{i=1} \frac{1}{2}h_i(f_t(x_i) - \frac{g_i}{h_i})^2 + \Omega(f_t) + \text{constant}$$
 
 which is exactly **weighted squared loss** with labels $\frac{g_i}{h_i}$ and weights $h_i$.
 
@@ -274,6 +274,192 @@ For large datasets, it is non-trivial to find candidates splits that satisfy the
 However, there is no existing **quantile sketch** for the weighted datasets. Therefore, most existing approximate algorithms either resorted to sorting on a random subset of data which have a change of failure or heuristics that do not have theoretical guarantee.
 
 To solve this problem, we introduced *a novel distributed weighted quantile sketch algorithm* that can handle weighted data with a *provable theoretical guarantee*. The general idea is to propose a data structure that supports *merge* and *prune* operations, with each operation proven to maintain a certain accuracy level.
+
+### 3.4 _ Sparsity-aware Split Finding 
+
+In many real-world problems, it is quite common for the input x to be sparse. 
+
+There are **multiple possible causes** for sparsity:
+
+1. Presence of missing values in the data
+2. Frequent zero entries in the statistics
+3. Artifacts of feature engineering such as one-hot encoding
+
+It is important to make the algorithm aware of the sparsity pattern in the data.
+
+To do so, we propose to add a default direction in each tree node which is shown in Fig. 4.
+
+<div align='center'>
+
+![alt text](img/image16.png)
+
+</div>
+
+When a value is missing in the sparse matrix x, the instance is classified into the default direction. 
+
+There are two choices of default direction in each branch. The optimal default directions are learnt from the data [The algorithm is shown in Alg. 3.]
+
+<div align='center'>
+
+![alt text](img/image17.png)
+
+</div>
+
+The key improvement is to only visit the non-missing entries $I_k$. The presented algorithm treats the non-presence as a missing value and learns the best direction to handle missing values. 
+
+The same algorithm can also be applied when the non-presence corresponds to a user specified value by limiting the enumeration only to consistent solution.
+
+To the best of our knowledge, most existing tree learning algorithms are either only optimized for dense data or need specific procedures to handle limited cases such as categorical encoding.
+
+XGBoost handles all sparsity patterns in a unified way. More importantly, our method exploits the sparsity to make computation complexity linear to number of non-missing entries in the input.
+
+<div align='center'>
+
+
+![alt text](img/image18.png)
+
+</div>
+
+Fig. 5 shows the comparison of sparsity aware and a naive implementation on an Allstate-10K dataset. 
+
+We find that the sparsity aware algorithm runs 50 times faster than the naive version $\rightarrow$ this confirms the importance of the sparsity aware algorithm.
+
+## 4 _ System Design
+
+### 4.1 _ Column block for Parallel learning
+
+The most time consuming part of tree learning is **to get the data into sorted order**.
+
+To reduce the cost of sorting, we propose to store the data in in-memory units, which we called *block*. Data in each block is stored in the compressed column (CSC) format, with each column sorted by the corresponding feature value. This input data layout only needs to be computed once before training and can be reused in later iterations.
+
+In the exact greedy algorithm, we store the entire dataset in a single block and run the split search algorithm by linearly scanning over the pre-sorted entries. 
+
+We do the split finding of all leaves collectively so one scan over the block will collect the statistics of the split candidates in all leaf branches. Fig. 6 shows how we transform a dataset into the format and find the optimal split using the block structure.
+
+<div align='center'>
+
+![alt text](img/image19.png)
+
+</div>
+
+The block structure also helps when using the approximate algorithms. Multiple blocks can be used in this case with each block corresponding to subset of rows in the dataset.
+
+Different blocks can be distributed across machines or stored on disk in the out-of-core setting. Using the sorted structure, the quantile finding step becomes a *linear scan* over the sorted columns.
+
+$\Rightarrow$ This is especially valuable for local proposal algorithms where candidates are generated frequently at each branch. 
+
+The binary search in histogram aggregation also becomes a linear time merge style algorithms.
+
+Collecting statistics for each column can be *parallelized* giving us a parallel algorithm for split finding.
+
+Importantly, the column block structure also supports column subsampling as it is easy to select a subset of columns in a block.
+
+**Time Complexity Analysis** 
+
+Let $d$ be the maximum depth of the tree and $K$ be total number of trees.
+
+For the exact greedy algorithm, the time complexity of original sparse aware algorithm is $O(Kd\| x\|_0 \log n)$. 
+
+Here we use $\| \text{x} \|_0$ to denote number of non-missing entries in the training data.
+
+On the other hand, tree boosting on the block structure only cost $O(Kd \| \text{x} \|_0 + \| \text{x}\|_0 \log n)$
+
+Here $O(\| x\|_0 \log n)$ is the one time preprocessing cost that can amortized.
+
+This analysis shows that the block structure helps to save an additional $\log n$ factor, which is significant when $n$ is large.
+
+For the approximate algorithm, the time complexity of original algorithm with binary search is $O(Kd \| x\|_0 \log q)$
+
+Here $q$ is the number of proposal candidates in the dataset. While $q$ is usually between 32 and 100, the $\log$ factor still introduces overhead.
+
+Using the block structure, we can reduce the time to $O(Kd\| x \|_0 + \| x \|_0 \log B)$ where $B$ is the maximum number of rows in each block. Again we can save the additional $\log q$ factor in computation.
+
+### 4.2 _ Cache-aware access
+
+While the proposed block structure helps optimize the computation complexity of split finding, the new algorithm requires indirect fetches of gradient statistics by row index, since these values are accessed in order of feature. This is a non-continuous memory access. 
+
+A naive implementation of split enumeration introduces immediate read/write dependency between the accumulation and the non-continious memory fetch operation (see Fig. 8)
+
+<div align='center'>
+
+![alt text](img/image20.png)
+
+</div>
+
+This slows down split finding when the gradient statistics do not fit into CPU cache and cache miss occur.
+
+For the exact greedy algorithm, we can alleviate the problem by a cache-aware prefetching algorithm. Specifically, we allocate an internal buffer in each thread, and then perform accumulation in a mini-batch manner.
+
+This prefetching changes the direct read/write dependency to the longer dependency and helps to reduce the runtime overhead when number of rows in the dataset is large
+
+<div align='center'>
+
+![alt text](img/image21.png)
+
+</div>
+
+Figure 7 gives the comparison of cache-aware vs non cache-aware algorithm on the Higgs and the Allstate dataset. 
+
+We find that cache-aware implementation of the exact greedy algorithm runs twice as fast as the naive version when the dataset is large.
+
+For approximate algorithms, we solve the problem by choosing a correct block size. We define the block size to be maximum number of examples in contained in a block, as this reflects the cache storage cost of gradient statistics.
+
+Choosing an overly small block size results in small workload for each thread and leads to inefficient parallelization.
+
+On the other hand, overly large blocks result in cache misses as the gradient statistics do not fit into the CPU cache.
+
+A good choice of block size balances these two factors. We compared various choices of block size on two datasets. 
+
+<div align='center'>
+
+![alt text](img/image23.png)
+
+</div>
+
+This result validates our discussion and shows that choosing $2^{16}$ examples per block balances the cache property adn parallelization.
+
+
+### 4.3 _ Blocks for Out-of-core Computation
+
+One goal of our system is to fully utilize a machine's resources to achieve scalable learning. Besides processors and memory, it is important to utilize disk space to handle data that does not fit into main memory.
+
+To enable out-of-core computation, we divide the data into multiple blocks and store each block on disk.
+
+During computation, it is important to use an independent thread to pre-fetch the block into a main memory buffer so computation can happen in concurrence with disk reading.
+
+However, this does not entirely solve the problem since the disk reading takes most of the computation time.
+
+It is important to reduce the overhead and increase the throughput of disk IO. We mainly use two techniques to improve the out-of-core computation.
+
+**Block Compression** 
+
+The block is compressed by columns and decompressed on the fly by an independent thread when loading into main memory. 
+
+$\rightarrow$ This helps to trade some of the computation in decompression with the disk reading cost.
+
+We use a general purpose compression algorithm for compressing the features values. For the row index, we subtract the row index by the beginning index of the block and use a 16bit integer to store each offset. This requires $2^{16}$ examples per block which is confirmed to be a good setting. In most of the dataset we tested, we achieve roughly a 26% to 29% compression ratio.
+
+**Block Sharding** 
+
+Shard the data onto multiple disks in an alternative manner.
+
+A pre-fetcher thread is assigned to each disk and fetches the data into an in-memory buffer. 
+
+The training thread then alternatively reads the data from each buffer.
+
+$\rightarrow$ This helps to increase the throughput of disk reading when multiple disks are available.
+
+## 5 _ Related works
+
+Our system implements **gradient boosting [10]**, which performs additive optimization in functional space.
+
+Gradient tree boosting has been successfully used in **classification [12]**, **learning to rank [5]**, **structured prediction [8]** as well as other fields.
+
+XGBoost incorporates a regularized model to prevent overfitting. This resembles previous work on **regularized greedy forest [25]** but simplifies the objective and algorithm for parallelization.
+
+
+
+---
 
 The main component of these algorithms is a data structure called *quantile summary*, that is able to answer quantile queries with relative accuracy of $\epsilon$. Two operations are defined for a quantile summary:
 
@@ -285,6 +471,7 @@ A quantile summary with merge and prune operations forms basic building block of
 In order to use quantile computation for approximate tree boosting, we need to find quantile on weighted data. This more general problem is not supported by any of the existing algorithm $\rightarrow$ use weighted quantile summary structure to solve this problem. Importantly, the new algorithm contains merge and prune operations with the *same guarantee* as GK summary.
 
 This allows our summary to be plugged into all the framework used GK summary as building block and answer quantile queries over weighted data efficiently.
+
 
 **A.1 Formalization and Definitions**
 
