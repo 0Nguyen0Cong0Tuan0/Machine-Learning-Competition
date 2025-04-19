@@ -73,7 +73,7 @@ where
 - $| \{ t_i \in D | X \subset X_i   \} |$ $\rightarrow$ the # of *T* containing $X$
 - $D$ $\rightarrow$ the total # of *T*
 
-The *Sp* coutn is 
+The *Sp* count is 
 
 $$\sup\_\text{count}(X) = | \{ t_i \in D | X \subset X_i  \} | $$
 
@@ -96,7 +96,7 @@ $$\sup(X) \geq \text{minsup} $$
 
 or equivalently
 
-$$\text{sup\_count}(X) \geq \text{minsup} \times |D|$$
+$$\text{sup \_ count}(X) \geq \text{minsup} \times |D|$$
 
 Example with $\text{minsup} = 70\%$
 
@@ -354,7 +354,7 @@ Using the document's *db* with $\text{minsup} = 50\%$ (*sp* count $\geq 3$)
 
 </center>
 
-All items have $\text{sup\_count} \geq 3$, so:
+All items have $\text{sup \_ count} \geq 3$, so:
 
 $$L_1 = \{\{A\}, \{C\}, \{D\}, \{T\}, \{W\}  \}$$
 
@@ -385,7 +385,7 @@ $$C_2 = \{ \{A, C \}, \{A, D \}, \{A, T \}, \{A, W \}, \{C, D \}, \{C, T \}, \{C
 
 </center>
 
-**Prune** - Keep *Is* with $\text{sup\_count} \geq 3$
+**Prune** - Keep *Is* with $\text{sup \_ count} \geq 3$
 
 $$L_2 = \{ \{A, C \}, \{A, T \}, \{A, W \}, \{C, D \}, \{C, T \}, \{C, W \}, \{D, W \}, \{T, W \}\}$$
 
@@ -425,7 +425,7 @@ $\Rightarrow C_3 = \{\{A, C, T\}, \{A, C, W\}, \{A, T, W\}, \{C, D, W\}, \{C, T,
 
 </center>
 
-**Prune** - Keep *Is* with $\text{sup\_count} \geq 3$
+**Prune** - Keep *Is* with $\text{sup \_ count} \geq 3$
 
 $L_3 = \{\{A, C, T\}, \{A, C, W\}, \{A, T, W\}, \{C, D, W\}, \{C, T, W\} \}$
 
@@ -451,7 +451,7 @@ $\Rightarrow C_4 = \{A, C, T, W\}$ (combine $\{A, C, T\}$ and $\{A, C, W\}$)
 
 </center>
 
-**Prune** - Keep *Is* with $\text{sup\_count} \geq 3$
+**Prune** - Keep *Is* with $\text{sup \_ count} \geq 3$
 
 $L_4 = \{\{A, C, T, W\}\}$
 
@@ -466,6 +466,19 @@ No pair in $L_4$ share **three first items** ($k-2 = 5 - 2 = 3$) so $C_5 = \empt
 $$L = L_1 \cup L_2 \cup L_3 \cup L_4 = \{ \{A\}, \{C\}, \{D\}, \{T\}, \{W\}, \{A, C \}, \{A, T \}, \{A, W \}, \{C, D \}, \{C, T \}, \{C, W \}, \{D, W \}, \{T, W \}, \{A, C, T\}, \{A, C, W\}, \{A, T, W\}, \{C, D, W\}, \{C, T, W\},  \{A, C, T, W\} \}$$
 
 $\Rightarrow$ **Total 19 FIs**
+
+### **Visualization (Apriori)**
+
+<div align='center'>
+
+![alt text](image-6.png)
+
+![alt text](image-7.png)
+
+![alt text](image-9.png)
+
+</div>
+
 
 
 ### **Lattice representation**
@@ -520,9 +533,9 @@ The *CA* efficiently mines *CFIs* using a vertical data representation (tidsets)
 
 **Tidset** (*Tids*) - for an *Is* $X$, $t(X)$ is the set of TIDs containing $X$. The *sp* is 
 
-$$\text{sup\_count}(X) = |t(X)|$$
+$$\text{sup \_ count}(X) = |t(X)|$$
 
-For example, $t(\{A, C\}) = \{1, 3, 4, 5\} \rightarrow \text{sup\_count}(AC) = 4$
+For example, $t(\{A, C\}) = \{1, 3, 4, 5\} \rightarrow \text{sup \_ count}(AC) = 4$
 
 **Charm process**
 
@@ -556,15 +569,11 @@ W: {1, 2, 3, 4, 5}
 
 **Check closure**
 
-For $AC$
-
-$\Rightarrow t(A, C) = \{1, 3, 4 , 5\}, \space i(\{1, 3, 4, 5\}) = \{A, C, W\}$
+For $AC$ $\Rightarrow t(A, C) = \{1, 3, 4 , 5\}, \space i(\{1, 3, 4, 5\}) = \{A, C, W\}$
 
 $\Rightarrow c(A, C) = ACW \neq AC \rightarrow$ **not closed**
 
-For $ACW$
-
-$\Rightarrow t(A, C, W) = \{1, 3, 4, 5\}, \space i(\{1, 3, 4, 5 \}) = \{A, C, W\} $
+For $ACW$ $\Rightarrow t(A, C, W) = \{1, 3, 4, 5\}, \space i(\{1, 3, 4, 5 \}) = \{A, C, W\} $
 
 $\Rightarrow c(A, C, W) = ACW \rightarrow$ **closed**
 
@@ -579,10 +588,190 @@ CDW × {2, 4, 5}
 CTW × {1, 3, 5}
 ACTW × {1, 3, 5}
 ```
+
+### **Visualization (Charm)**
+
+<div align='center'>
+
+![alt text](image-8.png)
+
+![alt text](image-10.png)
+
+![alt text](image-11.png)
+
+![alt text](image-12.png)
+
+![alt text](image-13.png)
+
+![alt text](image-14.png)
+
+![alt text](image-15.png)
+
+![alt text](image-16.png)
+
+</div>
+
 ### **Advantages**
 
+**Compactness** - fewer *Is* than *FIs*
+
+**Lossless** - retains all *sp* information
+
+**Efficient rules** - association rules from *CFIs* are non-redundant
+
+### **Implementation notes**
+
+**Vertical format** - store *Tids* as bitsets or lists for fast intersection
+
+**Diffsets** - optimize by storing differences between *Tids* to reduce memory
+
+**Challenges** - dense datasets may produce many *CFIs*, requiring pruning strategies
 
 ## **Maximal itemset mining**
 
-The GenMax algorithm
+### **Motivation**
 
+Maximal itemsets are the most compact representation, ideal for dense datasets where even closed itemsets are numerous
+
+### **GenMax algorithm**
+
+The **GenMax algorithm** mines *MFIs* using backtracking and *Tids*
+
+**Algorithm overview**
+
+- **Approach** $\rightarrow$ depth-first search with backtracking
+- **Data structure** $\rightarrow$ *Tids* for *sp* counting
+- **Pruning** $\rightarrow$ eliminates branches leading to non-*MIs*
+
+**Pseudocode (MFI-backtrack)**
+
+```python
+Input: I_l (current itemset), C_l (combinable items), l (length)
+Output: MFI (maximal frequent itemsets)
+
+MFI-backtrack(I_l, C_l, l):
+1. for each x in C_l:
+2.     I_{l+1} = I_l ∪ {x}
+3.     P_{l+1} = {y in C_l | y > x}  // Items after x (lexicographic order)
+4.     if I_{l+1} ∪ P_{l+1} has a superset in MFI:
+5.         return  // Prune branch
+6.     C_{l+1} = FI-combine(I_{l+1}, P_{l+1})
+7.     if C_{l+1} is empty:
+8.         if I_{l+1} has no superset in MFI:
+9.             MFI = MFI ∪ I_{l+1}
+10.    else:
+11.        MFI-backtrack(I_{l+1}, C_{l+1}, l+1)
+```
+**FI-combine function**
+
+```python
+FI-combine(I_{l+1}, P_{l+1}):
+1. C = ∅
+2. for each y in P_{l+1}:
+3.     if sup(I_{l+1} ∪ {y}) ≥ minsup:
+4.         C = C ∪ {y}
+5. return C
+```
+
+**Detailed example (with $\text{minsup} = 50\%$)**
+
+**Initial Tidsets**
+
+```python
+A: {1, 3, 4, 5}
+C: {1, 2, 3, 4, 5, 6}
+D: {2, 4, 5, 6}
+T: {1, 3, 5, 6}
+W: {1, 2, 3, 4, 5}
+```
+
+Start with $A$
+- Combinable items $C_1 = \{C, T, W\}$
+- Generate $AC \rightarrow t(AC) = \{1, 3, 4, 5\}, \text{sup \_ count} = 4 \geq 3$
+- Generate $AT \rightarrow t(AT) = \{1, 3, 5\}, \text{sup \_ count} = 3 \geq 3$
+- Generate $AW \rightarrow t(AW) = \{1, 3, 4 ,5\}, \text{sup \_ count} = 4 \geq 3$
+
+$\Rightarrow C_2 = \{AC, AT, AW \}$ 
+
+For **$AC$**
+- Combinable items $P_2 = \{T, W\}$
+- Generate $ACT \rightarrow t(ACT) = \{1, 3 , 5\}, \text{sup \_ count} = 3 \geq 3$
+- Generate $ACW \rightarrow t(ACW) = \{1, 3, 4 , 5\}, \text{sup \_ count} = 4 \geq 3$
+
+$\Rightarrow C_3 = \{ACT, ACW \}$ 
+
+For **$ACT$**
+- Combinable items $P_3 = \{W\}$
+- Generate $ACTW \rightarrow t(ACTW) = \{1, 3 , 5\}, \text{sup \_ count} = 3 \geq 3$
+
+$\Rightarrow C_4 = \{ACTW\}$ 
+
+For **$ACTW$**
+- No combinable items $C_5 = \empty$
+- Check maximality $\rightarrow$ no superset in *MFIs* yet so add $ACTW$
+
+Backtract to $ACW$
+- Superset $ACTW$ exists so prune $ACW$
+
+**Result** 2 *MFIs*
+
+```python
+ACTW × {1, 3, 5}
+CDW × {2, 4, 5}
+```
+### **Advantages**
+
+- **Minimal output** $\rightarrow$ Only the largest frequent itemsets
+- **Efficent for dense data** $\rightarrow$ Reduces output size significantly
+
+### **Implementation notes**
+
+- **Tidset Intersection** $\rightarrow$ use bitsets for fast computation.
+- **Pruning** $\rightarrow$ maintain a set of maximal itemsets to check for supersets.
+- **Challenges** $\rightarrow$ ensuring no maximal itemset is missed requires careful pruning.
+
+## **Observations and comparisons**
+
+**Hierarchy** $M \subset C \subset F$
+
+**Closed itemsets**
+- Lossless representation of all frequent itemsets
+- Ideal for generating concise association rules
+
+**Maximal itemsets**
+- Most compact but loss *sp* information for subsets
+- Best for dense datasets with many *CIs*
+
+**Trade-offs**
+
+- **F** $\rightarrow$ Comprehensive but redundant and large.
+- **C** $\rightarrow$ Balances compactness and information.
+- **M** $\rightarrow$ Minimal but may require reconstruction of subsets.
+
+**Practical applications**
+
+- **Market Basket Analysis** $\rightarrow$ place frequently co-purchased items together or offer bundles.
+- **Recommendation Systems** $\rightarrow$ suggest items based on frequent patterns.
+- **Bioinformatics** $\rightarrow$ identify co-occurring genes or proteins.
+Web Mining: Analyze common navigation paths.
+
+## **Advanced Topics and Extensions**
+
+### **Other algorithms**
+
+**FP-Growth**
+
+- Uses a Frequent Pattern tree (FP-tree) to avoid candidate generation
+- More efficient than Apriori for large, sparse datasets
+
+**Eclat**
+- Vertical data format with *Tids*
+- Depth-first search, similar to **Charm** and **GenMax**
+
+**LCM (Linear time Closed itemset Miner)**
+- Optimized for closed itemset mining, faster than **Charm** in some cases
+
+### **Dense vs Sparse datasets**
+
+- **Sparse datasets** $\rightarrow$ few items per transactions (e.g., retail). Many *FIs* but **Apriori** or **FP-Growth** works well
+- **Dense datasets** $\rightarrow$ many items per transaction (e.g., bioinformatics). Fewer but larger itemsets, **Charm** or **GenMax** is preferred 
