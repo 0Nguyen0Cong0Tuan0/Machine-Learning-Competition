@@ -631,7 +631,7 @@ It leverages *Bayes's Theorem* to compute these probabilities and assumes featur
 - **Robust to irrelevant features** $\rightarrow$ Due to the independence assumption, irrelevant features have less impact
 
 **Applications**
-- **Text classification **(spam filtering, document categorization)
+- **Text classification** (spam filtering, document categorization)
 - **Medical diagnosis** (predicting disease based on symptoms)
 - **Sentiment analysis**
 
