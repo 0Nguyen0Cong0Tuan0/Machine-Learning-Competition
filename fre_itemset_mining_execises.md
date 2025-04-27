@@ -1,4 +1,4 @@
-<!-- **Câu 1** - Cho CSDL sau và ***minsup = 60%*** và ***minconf = 100%***
+**Câu 1** - Cho CSDL sau và ***minsup = 60%*** và ***minconf = 100%***
 
 <center>
 
@@ -1525,7 +1525,7 @@ Explanation:
 - At height 0.75, P4 joins, forming the final cluster
 
 ---
--->
+
 
 **Câu 8**: Cho các mẫu dữ liệu được phân bố trong không gian hai chiều Oxy như hình vẽ 1 (trang sau). Ví dụ: điểm P1 ở tọa độ (3, 12). Giả sử người ta tiến hành gán nhãn cho mỗi điểm như sau:
 
@@ -1875,8 +1875,8 @@ We start with an unvisited point, mark it as visited, and expand clusters from c
 - A4 unvisited $\rightarrow$ mark as visited
 - A4 is a core point (neighborhood: A4, A8) $\rightarrow$ form a new cluster $C_2$ and assign A4 to $C_2$
 - Expand the cluster by processing points in A4's neighborhood
-  - A8 unvisited $\rightarorw$ mark as visited
-  - A8 is a core point (neighborhood: A8, A4) $\rightarrow$ add A8 to $C_2$ $\rightarorw$ A8's neighborhood includes A4 (visited) $\rightarrow$ cluster $C_2$ = {A4, A8}
+  - A8 unvisited $\rightarrow$ mark as visited
+  - A8 is a core point (neighborhood: A8, A4) $\rightarrow$ add A8 to $C_2$ $\rightarrow$ A8's neighborhood includes A4 (visited) $\rightarrow$ cluster $C_2$ = {A4, A8}
 
 **Cluster 5** - move to A7
 - A7 unvisited $\rightarrow$ mark as visited
